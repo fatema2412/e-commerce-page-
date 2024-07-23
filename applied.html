@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: rgb(248, 246, 246);
+}
+/* Navbar related css */
+
+#links {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 1%;
+  box-shadow: 2px 2px 5px 5px rgb(235, 235, 235);
+}
+
+#links > div {
+  display: flex;
+  list-style: none;
+}
+#links a {
+  text-decoration: none;
+  color: teal;
+  font-size: 30px;
+}
+
+table,
+td,
+th {
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 70%;
+  margin: auto;
+  margin-top: 50px;
+}
+
+th,
+td {
+  padding: 15px;
+}
+
+tr > th {
+  background-color: teal;
+  color: white;
+}
+
+</style>
+<body>
+  <select id="sortby name" onchange="sortname()">
+    <option value="sortname">SORTBYNAME</option>
+    <option value="asc"> ASCENDING</option>
+    <option value="dsc">DESCENDING</option>
+  </select>
+
+
+  <select id="sortbysalary"onchange="sortsalary()">
+    <option value ="sortbysalary"> SORTBYSALARY</option>
+    <option value="HTL">HIGHTOLOW</option>
+    <option value="lth">LOWTOHIGH</option>
+  </select>
+
+  <select id="sortbyrole" onchange="fliterrole()">
+    <option value="fliterrole"> FLITER BY ROLE</option>
+    <option value="FSD">FSD</option>
+    <option value="Backend">BACKEND</option>
+    <option value="FORNTEND">FORNTEND</option>
+  </select>
+    <div id="links">
+        <div><a href="index.html">Home</a></div>
+        <div><a href="applied.html">Applied Jobs</a></div>
+        <div><a href="bookmark.html">Bookmarks</a></div>
+      </div>
+    <main>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Job applied</th>
+              <th>Salary expected</th>
+              <th>Add to bookmark</th>
+            </tr>
+          </thead>
+          <tbody id="body">
+            <!-- Append your output to tbody -->
+          </tbody>
+        </table>
+      </main>
+</body>
+</html>
+<script>
+    var data=JSON.parse(localStorage.getItem("jobList"))
+    var bookmarkarr=JSON.parse(localStorage.getItem("bookmark"))||[]
+    function displayData(data) {
+  document.querySelector("#body").innerHTML = ""; // Clear existing table rows
+
+      data.forEach(function(elem) {
+         var tr=document.createElement("tr")
+        var td1=document.createElement("td");
+        td1.innerText=elem.name;
+        var td2=document.createElement("td");
+        td2.innerText=elem.email;
+        var td3=document.createElement("td");
+        td3.innerText=elem.role;
+        var td4=document.createElement("td");
+        td4.innerText=elem.salary;
+        var td5=document.createElement("td");
+        td5.innerText="BOOKMARK"
+        td5.style.cursor="pointer";
+        td5.addEventListener("click",function(){
+            bookmarkfun(elem)
+        bookmarkarr.push(elem)
+        })
+            
+        
+
+        
+        document.querySelector("#body").append(tr)
+        tr.append(td1,td2,td3,td4,td5);
+      });
+    }
+    displayData(data)
+  function sortname(){
+    var selected=document.getElementById("sortby name").value
+    if(selected=="asc"){
+      data.sort(function(a,b){
+    var x=a.name .toUpperCase();
+    var y=b.name .toUpperCase();
+    if(x>y){
+      return 1
+    }
+   if(x<y){
+    return -1;
+   }
+   return 0;
+  })
+  displayData(data)
+
+    }
+    if (selected=="dsc"){
+   data.sort(function(a,b){
+    var x=a.name.toUpperCase();
+    var y=b.name.toUpperCase();
+    if(x<y){
+      return 1
+    }
+   if(x>y){
+    return -1;
+   }
+   return 0;
+  })
+  displayData(data)
+  
+    
+  }
+   
+}
+
+function sortsalary(){
+  var selected= document.getElementById("sortbysalary").value
+  if(selected=="HTL"){
+   data.sort(function(a,b){
+    return b.salary-a.salary
+   })
+   displayData(data)
+
+  }
+  if(selected=="lth"){
+    data.sort(function(a,b){
+    return a.salary-b.salary
+   })
+   displayData(data)
+  }
+}
+function fliterrole() {
+  var byRole = document.querySelector("#sortbyrole").value;
+  
+  // Filter data based on selected role
+  var filteredData = data.filter(function(elem) {
+    return elem.role === byRole;
+  });
+
+  // Display filtered data
+  displayData(filteredData);
+  console.log (filteredData);
+}
+
+
+</script>
